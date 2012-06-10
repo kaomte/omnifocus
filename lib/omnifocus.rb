@@ -26,7 +26,7 @@ include Appscript
 # bts_id: a string uniquely identifying a task: SYSTEM(-projectname)?#id
 
 class OmniFocus
-  VERSION = '2.1.0'
+  VERSION = '2.1.1'
 
   ##
   # bug_db = {
@@ -92,16 +92,23 @@ class OmniFocus
   end
 
   ##
+  # Returns what folder we place bts tasks under
+
+  def parent_folder
+    @parent_folder = ENV["OMNIFOCUS_BTS_PARENT_FOLDER"] || "nerd"
+  end
+
+  ##
   # Get all projects under the nerd folder
 
   def nerd_projects
     unless defined? @nerd_projects then
-      @nerd_projects = omnifocus.folders["nerd"]
+      @nerd_projects = omnifocus.folders[parent_folder]
 
       begin
         @nerd_projects.get
       rescue
-        make omnifocus, :folder, "nerd"
+        make omnifocus, :folder, parent_folder
       end
     end
 
